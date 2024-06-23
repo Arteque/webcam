@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        canvas{
+            position: relative;
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+    
+   <canvas id="canvas" width="700" height="700"></canvas>
+</body>
+
+<script>
+
+    const mycam = document.createElement("video")
+    const canvas = document.querySelector("#canvas")
+    ctx = canvas.getContext("2d")
+    const frame = () => {
+        ctx.drawImage(mycam, 0,0,canvas.width, canvas.height)
+        const imgData = ctx.getImageData(0,0,canvas.width, canvas.height)
+        debugger
+        requestAnimationFrame(frame)
+    }
+    navigator.mediaDevices.getUserMedia({video:true})
+    .then((raw) => {
+        mycam.srcObject = raw
+        mycam.play()
+        mycam.onloadeddata = () => {
+            canvas.width = mycam.videoWidth
+            canvas.height = mycam.videoHeight
+            frame()
+        }
+    })
+    .catch(err => alert(err))
+</script>
+</html>
